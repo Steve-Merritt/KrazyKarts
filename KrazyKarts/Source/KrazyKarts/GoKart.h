@@ -56,13 +56,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void UpdateLocationFromVelocity(float DeltaTime);
-
-	void ApplyRotation(float DeltaTime);
-
-	FVector GetAirResistance();
-	FVector GetRollingResistance();
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -70,14 +63,21 @@ private:
 	// Local movement
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-	
+
+	void UpdateLocationFromVelocity(float DeltaTime);
+	void ApplyRotation(float DeltaTime, float SteeringThrow);
+
+	FGoKartMove CreateMove(float DeltaTime);
+	void SimulateMove(const FGoKartMove& Move);
+	void ClearAcknowledgedMoves(FGoKartMove LastMove);
+
+	FVector GetAirResistance();
+	FVector GetRollingResistance();
+
 	// RPCs
 
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveForward(float Value);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveRight(float Value);
+	void Server_SendMove(FGoKartMove Move);
 
 private:
 	// The mass of the car (kg).
@@ -98,18 +98,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RollingResistanceCoefficient = 0.015;
     
-	UPROPERTY(ReplicatedUsing=OnRep_ReplicatedTransform)
-	FTransform ReplicatedTransform;
+	UPROPERTY(ReplicatedUsing=OnRep_ServerState)
+	FGoKartState ServerState;
 
 	UFUNCTION()
-	void OnRep_ReplicatedTransform();
+	void OnRep_ServerState();
 
-	UPROPERTY(Replicated)
     FVector Velocity;
 
-	UPROPERTY(Replicated)
 	float Throttle;
-
-	UPROPERTY(Replicated)
 	float SteeringThrow;
+
+	TArray<FGoKartMove> UnacknowledgedMoves;
 };
