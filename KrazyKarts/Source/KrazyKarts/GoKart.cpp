@@ -42,10 +42,10 @@ void AGoKart::BeginPlay()
 	Super::BeginPlay();
 
 	// Simulate 1s of lag
-	if (HasAuthority())
-	{
-		NetUpdateFrequency = 1;
-	}
+	//if (HasAuthority())
+	//{
+	//	NetUpdateFrequency = 1;
+	//}
 }
 
 // Called every frame
