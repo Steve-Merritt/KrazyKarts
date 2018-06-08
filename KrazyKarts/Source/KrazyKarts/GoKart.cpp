@@ -34,6 +34,9 @@ AGoKart::AGoKart()
 
 	MovementComponent = CreateDefaultSubobject<UGoKartMovementComponent>(TEXT("MovementComponent"));
 	MovementReplicator = CreateDefaultSubobject<UGoKartMovementReplicator>(TEXT("MovementReplicator"));
+
+    ActionComponent = CreateDefaultSubobject<UGoKartActionComponent>(TEXT("ActionComponent"));
+    ActionReplicator = CreateDefaultSubobject<UGoKartActionReplicator>(TEXT("ActionReplicator"));
 }
 
 // Called when the game starts or when spawned
@@ -62,20 +65,47 @@ void AGoKart::Tick(float DeltaTime)
 void AGoKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("MoveForward", this, &AGoKart::MoveForward);
+	
+    PlayerInputComponent->BindAction("Accelerator", IE_Pressed, this, &AGoKart::AcceleratorPressed);
+    PlayerInputComponent->BindAction("Accelerator", IE_Released, this, &AGoKart::AcceleratorReleased);
+    PlayerInputComponent->BindAction("Brake", IE_Pressed, this, &AGoKart::BrakePressed);
+    PlayerInputComponent->BindAction("Brake", IE_Released, this, &AGoKart::BrakeReleased);
+
+    // Axis mappings
+    PlayerInputComponent->BindAxis("MoveForward", this, &AGoKart::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGoKart::MoveRight);
 }
 
 void AGoKart::MoveForward(float Value)
 {
 	if (MovementComponent == nullptr) return;
-
 	MovementComponent->SetThrottle(Value);
 }
 
 void AGoKart::MoveRight(float Value)
 {
 	if (MovementComponent == nullptr) return;
+    MovementComponent->SetSteeringThrow(Value);
+}
 
-	MovementComponent->SetSteeringThrow(Value);
+void AGoKart::AcceleratorPressed()
+{
+    UE_LOG(LogTemp, Warning, TEXT("AcceleratorPressed"));
+    ActionComponent->SetInputAcceleratorPressed();
+}
+
+void AGoKart::AcceleratorReleased()
+{
+    UE_LOG(LogTemp, Warning, TEXT("AcceleratorReleased"));
+    ActionComponent->SetInputAcceleratorReleased();
+}
+
+void AGoKart::BrakePressed()
+{
+    
+}
+
+void AGoKart::BrakeReleased()
+{
+
 }

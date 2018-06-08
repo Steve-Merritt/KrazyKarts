@@ -3,6 +3,7 @@
 #include "GoKartMovementReplicator.h"
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 
 
 // Sets default values for this component's properties
@@ -148,6 +149,9 @@ void UGoKartMovementReplicator::OnRep_ServerState()
 
 void UGoKartMovementReplicator::AutonomousProxy_OnRep_ServerState()
 {
+    //GEngine->AddOnScreenDebugMessage((uint64)-1, 20.0f, FColor::Emerald,
+    //    FString::Printf(TEXT("UGoKartMovementReplicator::AutonomousProxy_OnRep_ServerState")));
+
 	if (MovementComponent == nullptr) return;
 
 	GetOwner()->SetActorTransform(ServerState.Transform);
@@ -163,6 +167,9 @@ void UGoKartMovementReplicator::AutonomousProxy_OnRep_ServerState()
 
 void UGoKartMovementReplicator::SimulatedProxy_OnRep_ServerState()
 {
+    //GEngine->AddOnScreenDebugMessage((uint64)-1, 20.0f, FColor::Emerald,
+    //    FString::Printf(TEXT("UGoKartMovementReplicator::SimulatedProxy_OnRep_ServerState")));
+
 	if (MovementComponent == nullptr) return;
 
 	ClientTimeBetweenLastUpdates = ClientTimeSinceUpdate;

@@ -6,9 +6,9 @@
 #include "GameFramework/Pawn.h"
 #include "GoKartMovementComponent.h"
 #include "GoKartMovementReplicator.h"
+#include "GoKartActionComponent.h"
+#include "GoKartActionReplicator.h"
 #include "GoKart.generated.h"
-
-
 
 UCLASS()
 class KRAZYKARTS_API AGoKart : public APawn
@@ -32,6 +32,12 @@ public:
 
 private:
 	// Local movement
+    void AcceleratorPressed();
+    void AcceleratorReleased();
+
+    void BrakePressed();
+    void BrakeReleased();
+
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
@@ -40,4 +46,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UGoKartMovementReplicator* MovementReplicator;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UGoKartActionComponent* ActionComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    UGoKartActionReplicator* ActionReplicator;
 };
